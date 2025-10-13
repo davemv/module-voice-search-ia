@@ -1,5 +1,5 @@
 {
-  "name": "ntt/module-voice-search-ia",
+  "name": "edcris05/module-voice-search-ia",
   "description": "Magento 2 - Voice Search con IA (cache DB + import/export CSV + fallback).",
   "type": "magento2-module",
   "version": "1.0.0",
