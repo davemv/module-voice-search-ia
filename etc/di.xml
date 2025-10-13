@@ -1,0 +1,18 @@
+<?xml version="1.0"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="urn:magento:framework:ObjectManager/etc/config.xsd">
+
+    <type name="Magento\Framework\Console\CommandList">
+        <arguments>
+            <argument name="commands" xsi:type="array">
+                <item name="Voice_Export" xsi:type="object">NTT\VoiceSearch\Console\ExportCorrections</item>
+                <item name="Voice_Import" xsi:type="object">NTT\VoiceSearch\Console\ImportCorrections</item>
+                <!-- opcional para diagnósticos -->
+                <item name="Voice_Ping" xsi:type="object">NTT\VoiceSearch\Console\Ping</item>
+            </argument>
+        </arguments>
+    </type>
+    <!-- <type name="Magento\Search\Controller\Ajax\Suggest">
+        <plugin name="ntt_voice_suggest_plugin" type="NTT\VoiceSearch\Plugin\SuggestCorrectionPlugin" sortOrder="10"/>
+    </type> -->
+</config>

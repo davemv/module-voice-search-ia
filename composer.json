@@ -1,0 +1,19 @@
+{
+  "name": "ntt/module-voice-search-ia",
+  "description": "Magento 2 - Voice Search con IA (cache DB + import/export CSV + fallback).",
+  "type": "magento2-module",
+  "version": "1.0.0",
+  "license": "proprietary",
+  "require": {
+    "php": ">=8.1",
+    "magento/framework": "*"
+  },
+  "autoload": {
+    "files": [
+      "registration.php"
+    ],
+    "psr-4": {
+      "NTT\\VoiceSearch\\": ""
+    }
+  }
+}

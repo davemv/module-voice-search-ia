@@ -1,0 +1,20 @@
+<?xml version="1.0"?>
+<schema xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="urn:magento:framework:Setup/Declaration/Schema/etc/schema.xsd">
+
+    <table name="voice_search_corrections" resource="default" engine="innodb" comment="Voice Search Term Corrections">
+        <column xsi:type="int" name="id" nullable="false" identity="true" unsigned="true" comment="ID"/>
+        <column xsi:type="varchar" name="raw_term" nullable="false" length="255" comment="Raw term (usuario)"/>
+        <column xsi:type="varchar" name="corrected_term" nullable="false" length="255" comment="Término corregido"/>
+        <column xsi:type="timestamp" name="created_at" nullable="false" default="CURRENT_TIMESTAMP" on_update="false" comment="Creado"/>
+
+        <constraint xsi:type="primary" referenceId="PRIMARY">
+            <column name="id"/>
+        </constraint>
+
+        <!-- ÚNICO: garantiza no repetir 'raw_term' y ya crea el índice -->
+        <constraint xsi:type="unique" referenceId="UNQ_VOICE_SEARCH_RAW_TERM">
+            <column name="raw_term"/>
+        </constraint>
+    </table>
+</schema>
