@@ -3,8 +3,8 @@
       xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
     <body>
         <!-- Mostrar arriba del contenido -->
-        <!-- <referenceContainer name="content.top">
+        <referenceContainer name="content.top">
             <block class="NTT\VoiceSearch\Block\DidYouMean" name="ntt.voice.didyoumean" />
-        </referenceContainer> -->
+        </referenceContainer>
     </body>
 </page>

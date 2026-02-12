@@ -1,0 +1,100 @@
+// NTT_VoiceSearch - estilos del buscador por voz
+
+@mic-size: 36px;
+@mic-gap: 8px;     // separación interna entre mic y lupa
+@lupa-size: 36px;
+
+// Estilos comunes (mobile-first)
+& when (@media-common = true) {
+  .form.minisearch {
+    position: relative;
+    width: 310px;
+    right: 60px;
+    .field.search {
+      .control {
+        position: relative;
+      }
+    }
+
+    // Input un poco más grande y con padding para mic + lupa
+    #search {
+      // altura mobile por defecto
+      height: 44px;
+      line-height: 44px;
+      font-size: 16px;
+
+      // espacio para íconos (mic + gap + lupa + margen)
+      padding-right: (@mic-size + @mic-gap + @lupa-size + 16px);
+    }
+
+    // Botón de micrófono (insertado por JS). Sin estilos inline.
+    .voice-btn {
+      position: absolute;
+      right: (@lupa-size + @mic-gap + 8px); // queda a la izquierda de la lupa
+      top: 50%;
+      transform: translateY(-50%);
+      width: @mic-size;
+      height: @mic-size;
+      border: 0;
+      border-radius: 9999px;
+      background: @color-gray94; // color neutro de la lib
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0;
+      cursor: pointer;
+
+      &:focus {
+        outline: 2px solid @color-blue1;
+        outline-offset: 2px;
+      }
+    }
+
+    // “Meter” la lupa dentro del input, sin tocar plantillas core
+    .actions {
+      position: absolute;
+      right: 8px;
+      top: 50%;
+      transform: translateY(-50%);
+      margin: 0;
+      padding: 0;
+
+      .action.search {
+        width: @lupa-size;
+        height: @lupa-size;
+        border-radius: 9999px;
+        padding: 0;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+
+        &:focus {
+          outline: 2px solid @color-blue1;
+          outline-offset: 2px;
+        }
+      }
+    }
+  }
+}
+
+// Desktop / tablets: usá los mixins de Magento para breakpoints
+.media-width(@extremum, @break) when (@extremum = 'min') and (@break = @screen__m) {
+  .form.minisearch {
+    #search {
+      height: 48px;
+      line-height: 48px;
+      // un poco más de aire en pantallas >= tablet
+      padding-right: (@mic-size + @mic-gap + @lupa-size + 22px);
+    }
+  }
+}
+
+.media-width(@extremum, @break) when (@extremum = 'min') and (@break = @screen__l) {
+  .form.minisearch {
+    #search {
+      height: 50px;
+      line-height: 50px;
+      font-size: 17px;
+    }
+  }
+}

@@ -1,7 +1,23 @@
+<?php
+declare(strict_types=1);
+
+/** @var \NTT\VoiceSearch\Block\Config $block */
+$recommended = (array) $block->getRecommendedTerms(); // ['title' => '', 'items' => []]
+
+$title = (string)($recommended['title'] ?? 'Recomendados');
+$items = (array)($recommended['items'] ?? []);
+?>
 <script type="text/x-magento-init">
 {
   "*": {
-    "NTT_VoiceSearch/js/voice-search-init": {}
+    "NTT_VoiceSearch/js/voice-search-init": {
+      "ajaxUrl": "<?= $block->escapeUrl($block->getUrl('voicesearch/ajax/search')) ?>",
+      "searchUrl": "<?= $block->escapeUrl($block->getUrl('catalogsearch/result/index')) ?>",
+      "recommended": {
+        "title": "<?= $block->escapeHtmlAttr($title) ?>",
+        "items": <?= /* @noEscape */ json_encode($items, JSON_UNESCAPED_UNICODE) ?>
+      }
+    }
   }
 }
 </script>
