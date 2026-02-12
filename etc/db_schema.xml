@@ -17,4 +17,28 @@
             <column name="raw_term"/>
         </constraint>
     </table>
+    <table name="ntt_voicesearch_synonym" resource="default" engine="innodb" comment="VoiceSearch Synonyms">
+        <column name="synonym_id" xsi:type="int" nullable="false" identity="true" unsigned="true" comment="ID" />
+        <column name="store_id"    xsi:type="smallint" nullable="false" default="0" comment="Store ID" />
+        <column name="group_code"  xsi:type="varchar"  length="32"  nullable="false" comment="Group: product_type|attribute" />
+        <column name="attribute_code" xsi:type="varchar" length="64" nullable="true" comment="Attribute code when group=attribute" />
+        <column name="canonical"   xsi:type="varchar"  length="255" nullable="false" comment="Canonical value" />
+        <column name="variants"    xsi:type="text"     nullable="false" comment="JSON array of variants" />
+        <column name="updated_at"  xsi:type="timestamp" nullable="false" default="CURRENT_TIMESTAMP" on_update="true" />
+        <constraint xsi:type="primary" referenceId="PRIMARY">
+            <column name="synonym_id"/>
+        </constraint>
+        <index referenceId="NTT_VS_SYNONYM_S_I" indexType="btree">
+            <column name="store_id"/><column name="group_code"/><column name="attribute_code"/><column name="canonical"/>
+        </index>
+    </table>
+    <table name="ntt_product_embeddings" resource="default" engine="innodb" comment="NTT Product Embeddings">
+        <column xsi:type="int" name="product_id" unsigned="true" nullable="false" comment="Product ID"/>
+        <column xsi:type="text" name="vector" nullable="false" comment="JSON encoded vector"/>
+        <column xsi:type="int" name="vector_dimensions" nullable="true" comment="Vector dimension length"/>
+        <column xsi:type="timestamp" name="updated_at" nullable="false" default="CURRENT_TIMESTAMP" on_update="true" comment="Updated at"/>
+        <constraint xsi:type="primary" referenceId="PRIMARY">
+            <column name="product_id"/>
+        </constraint>
+    </table>
 </schema>

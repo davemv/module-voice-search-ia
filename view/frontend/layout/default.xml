@@ -3,10 +3,10 @@
       xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
     <body>
         <!-- Inyecta el init al final del body -->
-        <!-- <referenceContainer name="before.body.end">
-            <block class="Magento\Framework\View\Element\Template"
+        <referenceContainer name="before.body.end">
+            <block class="NTT\VoiceSearch\Block\Config"
                    name="voice.search.init"
                    template="NTT_VoiceSearch::init.phtml"/>
-        </referenceContainer> -->
+        </referenceContainer>
     </body>
 </page>

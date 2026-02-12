@@ -1,0 +1,80 @@
+<?xml version="1.0"?>
+<!-- app/code/NTT/VoiceSearch/etc/adminhtml/system.xml -->
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Config:etc/system_file.xsd">
+  <system>
+    <section id="ntt_voice" translate="label" sortOrder="900" showInDefault="1" showInWebsite="1" showInStore="1">
+      <label>NTT Voice Search</label>
+      <tab>catalog</tab>
+      <resource>Magento_Config::config</resource>
+      
+      <group id="nlp" translate="label" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
+        <label>NL Parsing</label>
+
+        <field id="color_attribute" translate="label" type="text"
+               sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
+          <label>Código de atributo para “color” (opcional)</label>
+          <comment>Dejalo vacío si tu catálogo no usa color.</comment>
+        </field>
+
+        <field id="synonyms_json" translate="label" type="textarea"
+               sortOrder="20" showInDefault="1" showInWebsite="1" showInStore="1">
+          <label>Sinónimos (JSON, opcional)</label>
+          <comment><![CDATA[{"campera":"jacket","celu":"smartphone","auris":"headphones"}]]></comment>
+        </field>
+
+      </group>
+      <group id="ai" translate="label" sortOrder="20" showInDefault="1" showInWebsite="1" showInStore="1">
+        <label>AI Re-rank</label>
+        <field id="intent_mode"
+              translate="label"
+              type="select"
+              sortOrder="10"
+              showInDefault="1"
+              showInWebsite="1"
+              showInStore="1">
+            <label>Resolución de intención</label>
+            <source_model>NTT\VoiceSearch\Model\Config\Source\IntentMode</source_model>
+            <comment>Define cómo se interpreta la búsqueda</comment>
+        </field>
+        <field id="enable_rerank" translate="label" type="select" sortOrder="10"
+               showInDefault="1" showInWebsite="1" showInStore="1">
+          <label>Habilitar re-rank por IA</label>
+          <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+          <comment>Si está apagado, el listado queda como viene del motor (sin costo).</comment>
+        </field>
+
+        <field id="provider" translate="label" type="select" sortOrder="20"
+               showInDefault="1" showInWebsite="1" showInStore="1">
+          <label>Proveedor</label>
+          <source_model>NTT\VoiceSearch\Model\Config\Source\AiProvider</source_model>
+          <comment>Por ahora: OpenAI embeddings.</comment>
+        </field>
+
+        <field id="openai_api_key" translate="label" type="obscure" sortOrder="30"
+               showInDefault="1" showInWebsite="1" showInStore="1">
+          <label>OpenAI API Key</label>
+          <comment>Guárdala como secreto. Solo se usa si el proveedor es OpenAI.</comment>
+        </field>
+
+        <field id="openai_model" translate="label" type="text" sortOrder="40"
+               showInDefault="1" showInWebsite="1" showInStore="1">
+          <label>Modelo OpenAI</label>
+          <comment>Ej: text-embedding-3-small</comment>
+        </field>
+
+        <field id="topn" translate="label" type="text" sortOrder="50"
+               showInDefault="1" showInWebsite="1" showInStore="1">
+          <label>Cantidad de productos a reordenar (Top-N)</label>
+          <comment>50 recomendado.</comment>
+        </field>
+
+        <field id="ttl_minutes" translate="label" type="text" sortOrder="60"
+               showInDefault="1" showInWebsite="1" showInStore="1">
+          <label>TTL caché (minutos)</label>
+          <comment>Embeddings y re-rank del query.</comment>
+        </field>
+      </group>
+    </section>
+  </system>
+</config>

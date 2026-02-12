@@ -1,0 +1,22 @@
+<?xml version="1.0"?>
+<!-- app/code/NTT/VoiceSearch/etc/config.xml -->
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Store:etc/config.xsd">
+  <default>
+    <ntt_voice>
+      <nlp>
+        <color_attribute>color</color_attribute>
+        <synonyms_json></synonyms_json>
+        <rules_rows></rules_rows>
+      </nlp>
+      <ai>
+        <enable_rerank>0</enable_rerank>
+        <provider>openai</provider>
+        <openai_api_key></openai_api_key>
+        <openai_model>text-embedding-3-small</openai_model>
+        <topn>50</topn>
+        <ttl_minutes>1440</ttl_minutes>
+      </ai>
+    </ntt_voice>
+  </default>
+</config>
