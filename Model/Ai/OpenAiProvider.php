@@ -6,13 +6,13 @@ namespace NTT\VoiceSearch\Model\Ai;
 use Magento\Framework\App\Config\ScopeConfigInterface;
 use Magento\Store\Model\ScopeInterface;
 use Magento\Framework\HTTP\Client\Curl;
-
+use NTT\VoiceSearch\Logger\Logger;
 class OpenAiProvider implements EmbeddingProviderInterface
 {
     public function __construct(
         private ScopeConfigInterface $cfg,
         private Curl $curl,
-        private \NTT\VoiceSearch\Logger\Logger $log
+        private Logger $log
     ) {}
 
     public function embed(string $text, int $storeId): array
