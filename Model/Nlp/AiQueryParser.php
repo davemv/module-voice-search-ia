@@ -10,6 +10,9 @@ use NTT\VoiceSearch\Logger\Logger;
 
 final class AiQueryParser
 {
+    private const TYPE_MIN_SCORE = 0.55;
+    private const COLOR_MIN_SCORE = 0.70;
+
     public function __construct(
         private StoreManagerInterface $stores,
         private Config $config,
@@ -32,8 +35,8 @@ final class AiQueryParser
         $colorCode  = $this->config->getColorAttributeCode($storeId) ?: 'color';
         $colorMap   = $this->config->getAttributeValueMap($storeId, $colorCode); // canonical label => variants
 
-        $productCanonicals = array_keys($productMap);
-        $colorCanonicals   = array_keys($colorMap);
+        [$productCandidates, $productAliasToCanonical] = $this->buildCandidates($productMap);
+        [$colorCandidates, $colorAliasToCanonical] = $this->buildCandidates($colorMap);
 
         // 2) Embedding del query
         $qVec = $this->embedder->embedQuery($q);
@@ -45,15 +48,17 @@ final class AiQueryParser
             return ['term' => '', 'filters' => [], 'raw' => $q, 'matched' => false];
         }
 
-        // 3) Elegir mejor product_type
-        [$bestType, $bestTypeScore] = $this->bestMatch($qVec, $productCanonicals);
+        // 3) Elegir mejor product_type (incluye variantes, no solo canonical)
+        [$bestTypeAlias, $bestTypeScore] = $this->bestMatch($qVec, $productCandidates);
+        $bestType = $bestTypeAlias !== null ? ($productAliasToCanonical[$bestTypeAlias] ?? $bestTypeAlias) : null;
 
-        // 4) Elegir mejor color
-        [$bestColor, $bestColorScore] = $this->bestMatch($qVec, $colorCanonicals);
+        // 4) Elegir mejor color (incluye variantes, no solo canonical)
+        [$bestColorAlias, $bestColorScore] = $this->bestMatch($qVec, $colorCandidates);
+        $bestColor = $bestColorAlias !== null ? ($colorAliasToCanonical[$bestColorAlias] ?? $bestColorAlias) : null;
 
         // 5) Umbrales (ajustables por config luego)
-        $typeMin  = 0.70;
-        $colorMin = 0.70;
+        $typeMin  = self::TYPE_MIN_SCORE;
+        $colorMin = self::COLOR_MIN_SCORE;
 
         $term = '';
         $filters = [];
@@ -71,8 +76,10 @@ final class AiQueryParser
 
         $matched = ($term !== '' || !empty($filters));
         $this->log->info('AiQueryParser: best', [
+            'bestTypeAlias' => $bestTypeAlias,
             'bestType' => $bestType,
             'bestTypeScore' => $bestTypeScore,
+            'bestColorAlias' => $bestColorAlias,
             'bestColor' => $bestColor,
             'bestColorScore' => $bestColorScore,
         ]);
@@ -82,10 +89,52 @@ final class AiQueryParser
             'raw' => $q,
             'matched' => $matched,
             'debug' => [
+                'bestTypeAlias' => $bestTypeAlias,
                 'bestType' => $bestType, 'bestTypeScore' => $bestTypeScore,
+                'bestColorAlias' => $bestColorAlias,
                 'bestColor' => $bestColor, 'bestColorScore' => $bestColorScore,
             ]
         ];
+    }
+
+    /**
+     * @param array<string, array<int, string>> $map
+     * @return array{0:array<int, string>, 1:array<string, string>} [candidateTexts, alias => canonical]
+     */
+    private function buildCandidates(array $map): array
+    {
+        $candidateTexts = [];
+        $aliasToCanonical = [];
+
+        foreach ($map as $canonical => $variants) {
+            $canonical = trim((string)$canonical);
+            if ($canonical === '') {
+                continue;
+            }
+
+            if (!isset($aliasToCanonical[$canonical])) {
+                $candidateTexts[] = $canonical;
+            }
+            $aliasToCanonical[$canonical] = $canonical;
+
+            if (!is_array($variants)) {
+                continue;
+            }
+
+            foreach ($variants as $variant) {
+                $variant = trim((string)$variant);
+                if ($variant === '') {
+                    continue;
+                }
+
+                if (!isset($aliasToCanonical[$variant])) {
+                    $candidateTexts[] = $variant;
+                }
+                $aliasToCanonical[$variant] = $canonical;
+            }
+        }
+
+        return [$candidateTexts, $aliasToCanonical];
     }
 
     /**

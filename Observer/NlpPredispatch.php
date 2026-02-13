@@ -91,16 +91,19 @@ class NlpPredispatch implements ObserverInterface
 
             $aiTerm = trim((string)($ai['term'] ?? ''));
             $aiFilters = (array)($ai['filters'] ?? []);
+            $targetTerm = $aiTerm !== '' ? $aiTerm : $qOriginal;
+            $shouldRedirect = !empty($ai['matched'])
+                && (strcasecmp($targetTerm, $qOriginal) !== 0 || !empty($aiFilters));
 
-            if (!empty($ai['matched']) && $aiTerm !== '' && strcasecmp($aiTerm, $qOriginal) !== 0) {
+            if ($shouldRedirect) {
 
                 $url = $this->urlBuilder->getUrl('catalogsearch/result/index', [
-                    '_query' => (['q' => $aiTerm] + $aiFilters)
+                    '_query' => (['q' => $targetTerm] + $aiFilters)
                 ]);
 
                 $this->aiLogger->info('NlpPredispatch: ai-redirect', [
                     'from' => $qOriginal,
-                    'to' => $aiTerm,
+                    'to' => $targetTerm,
                     'filters' => $aiFilters,
                     'url' => $url
                 ]);
